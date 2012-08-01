@@ -8,7 +8,7 @@ library [faker]. It actually uses the same data for generating.
 latest snapshot version. See [tags] to find the README targeting your version.
 
 This release of **scala-faker** is build against Scala `2.8.0`, `2.8.1`, `2.8.2`,
-`2.9.0`, `2.9.0-1` and `2.9.1`.
+`2.9.0`, `2.9.0-1`, `2.9.1`, `2.9.2` and `2.10.0-M5`.
 
 **scala-faker** only depends on [snakeyaml] for reading the original [faker]
 yaml files. The tests are written with [scalatest].
@@ -50,21 +50,21 @@ Adding scala-faker as dependency to your project is really simple. Just add
 
 #### sbt
 
-    resolvers += "justwrote" at "http://repo.justwrote.it/releases/"
+    resolvers += "justwrote" at "http://repo.justwrote.it/snapshots/"
 
-    libraryDependencies += "it.justwrote" %% "scala-faker" % "0.1"
+    libraryDependencies += "it.justwrote" %% "scala-faker" % "0.2-SNAPSHOT"
 
 #### Maven
 
     <repository>
         <id>justwrote</id>
-        <url>http://repo.justwrote.it/releases/</url>
+        <url>http://repo.justwrote.it/snapshots/</url>
     </repository>
     ...
     <dependency>
         <groupId>it.justwrote</groupId>
         <artifactId>scala-faker_2.9.1</artifactId>
-        <version>0.1</version>
+        <version>0.2-SNAPSHOTS</version>
     </dependency>
 
 where `2.9.1` is you Scala version.
