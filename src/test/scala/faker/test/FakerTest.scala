@@ -135,14 +135,14 @@ class InternetTest extends GeneralTest {
     }
     "generate an ipv4 address" in {
       val ip = Internet.ip_v4_address
-      ip.count(_ == '.') should be (3)
+      ip.toSeq.count(_ == '.') should be (3)
       (1 to 1000).foreach(x => {
         Internet.ip_v4_address.split('.').map(_.toInt).max should be <= (255)
       })
     }
     "generate an ipv6 address" in {
       val ip = Internet.ip_v6_address
-      ip.count(_ == ':') should be (7)
+      ip.toSeq.count(_ == ':') should be (7)
       (1 to 1000).foreach(x => {
         Internet.ip_v6_address.split(':').map(Integer.valueOf(_, 16).intValue).max should be <= (65535)
       })

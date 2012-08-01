@@ -2,7 +2,7 @@ package faker
 
 import org.yaml.snakeyaml.Yaml
 import util.Random
-import scala.collection.JavaConverters._
+import scala.collection.JavaConversions._
 import java.util.ArrayList
 import io.Source
 
@@ -22,7 +22,7 @@ object Faker {
     
     private[this] val (langData, localeData) = init(_language, _locale)
 
-    private[Faker] def get(s: String): Option[Seq[Object]] = _locale match {
+    private[Faker] def get(s: String): Option[List[Object]] = _locale match {
       case Some(l) => get(s.replaceFirst("\\*", l) + ".", localeData) match {
                         case Some(x) => Option(x)
                         case _ => getFromLanguage(s)
@@ -33,14 +33,14 @@ object Faker {
     private[this] def getFromLanguage(s: String) = get(s.replaceFirst("\\*", _language) + ".", langData)
     
     @scala.annotation.tailrec
-    private[this] def get(s: String, data: Option[Object]): Option[Seq[String]] = data match {
+    private[this] def get(s: String, data: Option[Object]): Option[List[String]] = data match {
       case None => None
       case Some(x: java.util.Map[_, _]) if s.indexOf('.') != -1 =>
         val key = s.substring(0, s.indexOf('.'))
         val newKey = s.replaceFirst(key + ".", "")
         get(newKey, Option(x.asInstanceOf[java.util.Map[String, Object]].get(key)))
       case Some(x: java.util.List[_]) if s == "" =>
-        Some(x.asInstanceOf[java.util.List[String]].asScala)
+        Some(asIterable(x.asInstanceOf[java.util.List[String]]).toList)
       case Some(x) => None
     }
   
@@ -68,20 +68,20 @@ object Faker {
     }
   }
 
-  private[faker] def get(s: String): Option[Seq[Object]] = data.get(s)
+  private[faker] def get(s: String): Option[List[Object]] = data.get(s)
 }
 
 trait Base {
   private val letters = 'a' to 'z'
 
-  def numerify(s: String): String =
+  def numerify(s: String) =
     """#""".r.replaceAllIn(s, Random.nextInt(10).toString)
 
-  def letterify(s: String): String =
+  def letterify(s: String) =
     """\?""".r.replaceAllIn(s, letters.rand.toString)
 
   // Nice name!
-  def bothify(s: String): String =
+  def bothify(s: String) =
     letterify(numerify(s))
 
   def fetch[T](key: String): T =
@@ -114,19 +114,19 @@ object Internet extends Base {
   def free_email: String = free_email(null)
   def free_email(name: String): String = user_name(name) + "@" + fetch("internet.free_email")
 
-  def domain_name: String = domain_word + "." + domain_suffix
-  def domain_word: String = """\W""".r.replaceAllIn(Company.name.split(" ").head, "").toLowerCase
+  def domain_name = domain_word + "." + domain_suffix
+  def domain_word = """\W""".r.replaceAllIn(Company.name.split(" ").head, "").toLowerCase
   def domain_suffix: String = fetch("internet.domain_suffix")
-  def ip_v4_address: String = {
+  def ip_v4_address = {
     (1 to 4).map(x => v4.rand).mkString(".")
   }
-  def ip_v6_address: String = {
+  def ip_v6_address = {
     (1 to 8).map(x => v6.rand).map(x => "%x".format(x)).mkString(":")
   }
 }
 
 object Name extends Base {
-  def name: String = fetch[ArrayList[String]]("name.formats").asScala.map(eval).mkString(" ")
+  def name = asIterable(fetch[ArrayList[String]]("name.formats")).map(eval).mkString(" ")
 
   private def eval(s: String) = s match {
     case ":first_name" => first_name
@@ -143,7 +143,7 @@ object Name extends Base {
 }
 
 object PhoneNumber extends Base {
-  def phone_number: String = numerify(fetch("phone_number.formats"))
+  def phone_number = numerify(fetch("phone_number.formats"))
 }
 
 object Company extends Base {
@@ -160,18 +160,18 @@ object Lorem extends Base {
 
   private def rand(i: Int) = Random.nextInt(i)
 
-  def words(num: Int = 3): List[String]  =
+  def words(num: Int = 3) =
     (1 until num).map(x => fetch[String]("lorem.words")).toList
 
-  def sentence(word_count: Int = 4): String =
+  def sentence(word_count: Int = 4) =
     words(word_count + rand(6)).mkString(" ").capitalize + "."
 
-  def sentences(sentence_count: Int = 3): List[String] =
+  def sentences(sentence_count: Int = 3) =
     (1 until sentence_count).map(x => sentence()).toList
 
-  def paragraph(sentences_count: Int = 3): String =
+  def paragraph(sentences_count: Int = 3) =
     sentences(sentences_count + rand(3)).mkString(" ")
 
-  def paragraphs(paragraph_count: Int = 3): List[String] =
+  def paragraphs(paragraph_count: Int = 3) =
     (1 until paragraph_count).map(x => paragraph()).toList
 }
