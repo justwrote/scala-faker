@@ -4,8 +4,8 @@ import sbtrelease.Release._
 import ls.Plugin.LsKeys
 
 object Versions {
-  val Scala_2_10 = "2.10.0-M5"
-  val ScalaTest_2_10 = "1.9-2.10.0-M5-B2"
+  val Scala_2_10 = "2.10.0"
+  val ScalaTest_2_10 = "1.9.1"
 }
 
 object Dependencies {
@@ -21,7 +21,7 @@ object Dependencies {
       case "2.8.0" => st("2.8.1", "1.5.1") // argh, there is no 2.8.0 scalatest version in any maven repository
       case "2.8.1" | "2.8.2" => st(version, "1.5.1")
       case v if v.startsWith("2.9.")  => st(version, "1.6.1")
-      case Scala_2_10 => st(version, ScalaTest_2_10)
+      case Scala_2_10 => st("2.10", ScalaTest_2_10)
       case _ => sys.error("ScalaTest not supported for scala version %s!" format version)
     }
   }
@@ -51,7 +51,7 @@ object ScalaFaker extends Build {
       sbtPlugin := false,
       organization := "it.justwrote",
       name := projectName,
-      scalaVersion := "2.9.2",
+      scalaVersion := "2.10.0",
       crossScalaVersions := Seq("2.8.0", "2.8.1", "2.8.2", "2.9.0", "2.9.0-1", "2.9.1", "2.9.2", Scala_2_10),
       publishArtifact in (Compile, packageDoc) := false,
       scalacOptions ++= Seq("-deprecation", "-Xcheckinit", "-encoding", "utf8", "-g:vars", "-unchecked", "-optimize"),
