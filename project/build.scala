@@ -28,8 +28,8 @@ object ScalaFaker extends Build {
 
   def sourceDir(version: String) = version match {
     case "2.8.0" => "-2.8.0"
-    case v if v.startsWith("2.10.") => "-2.10"
-    case _ => ""
+    case v if v.startsWith("2.10.") => ""
+    case _ => "-2.8.1-2.9"
   }
 
   def additionalCompilerOptions(version: String): Seq[String] = version match {
@@ -44,7 +44,7 @@ object ScalaFaker extends Build {
       sbtPlugin := false,
       organization := "it.justwrote",
       name := projectName,
-      scalaVersion := "2.9.2",
+      scalaVersion := "2.10.2",
       crossScalaVersions := Seq("2.8.0", "2.8.1", "2.8.2", "2.9.0", "2.9.0-1", "2.9.1", "2.9.2", "2.10.2"),
       publishArtifact in (Compile, packageDoc) := false,
       scalacOptions ++= Seq("-deprecation", "-Xcheckinit", "-encoding", "utf8", "-g:vars", "-unchecked", "-optimize"),
