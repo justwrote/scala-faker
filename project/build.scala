@@ -4,8 +4,8 @@ import sbtrelease.Release._
 import ls.Plugin.LsKeys
 
 object Versions {
-  val Scala_2_10 = "2.10.0-M5"
-  val ScalaTest_2_10 = "1.9-2.10.0-M5-B2"
+  val Scala_2_10 = "2.10.0"
+  val ScalaTest_2_10 = "1.9.1"
 }
 
 object Dependencies {
@@ -21,7 +21,7 @@ object Dependencies {
       case "2.8.0" => st("2.8.1", "1.5.1") // argh, there is no 2.8.0 scalatest version in any maven repository
       case "2.8.1" | "2.8.2" => st(version, "1.5.1")
       case v if v.startsWith("2.9.")  => st(version, "1.6.1")
-      case Scala_2_10 => st(version, ScalaTest_2_10)
+      case Scala_2_10 => st("2.10", ScalaTest_2_10)
       case _ => sys.error("ScalaTest not supported for scala version %s!" format version)
     }
   }
@@ -38,14 +38,14 @@ object ScalaFaker extends Build {
     case Scala_2_10 => "-2.10"
     case _ => ""
   }
-  
+
   def additionalCompilerOptions(version: String): Seq[String] = version match {
     case Scala_2_10 => Seq("-feature")
     case _ => Seq.empty
   }
-    
+
   val projectName = "scala-faker"
-  
+
   val buildSettings = Defaults.defaultSettings ++ releaseSettings ++ ls.Plugin.lsSettings ++
     Seq(
       sbtPlugin := false,
@@ -57,7 +57,7 @@ object ScalaFaker extends Build {
       scalacOptions ++= Seq("-deprecation", "-Xcheckinit", "-encoding", "utf8", "-g:vars", "-unchecked", "-optimize"),
       parallelExecution := true,
       parallelExecution in Test := true,
-      publishTo <<= version { 
+      publishTo <<= version {
         v => Some(Resolver.file("repo", file("/home/ds/Projects/justwrote.github.com/" + { if (v.trim.endsWith("SNAPSHOT")) "snapshots" else "releases" } )))
       },
       homepage := Some(new java.net.URL("https://github.com/justwrote/scala-faker/")),
