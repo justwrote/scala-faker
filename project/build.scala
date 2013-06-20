@@ -56,8 +56,9 @@ object ScalaFaker extends Build {
       homepage := Some(new java.net.URL("https://github.com/justwrote/scala-faker/")),
       (LsKeys.tags in LsKeys.lsync) := Seq("test", "fake", "faker"),
       (externalResolvers in LsKeys.lsync) := Seq("justwrote" at "http://repo.justwrote.it/releases/"),
-      (description in LsKeys.lsync) := "A library for generating fake data.",
+      description := "A library for generating fake data.",
       (LsKeys.docsUrl in LsKeys.lsync) := Some(new java.net.URL("https://github.com/justwrote/scala-faker#readme")),
+      licenses := Seq(("Apache2", new java.net.URL("http://www.apache.org/licenses/LICENSE-2.0.txt"))),
       initialCommands := "import faker._"
     )
 
