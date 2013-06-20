@@ -8,7 +8,7 @@ library [faker]. It actually uses the same data for generating.
 latest snapshot version. See [tags] to find the README targeting your version.
 
 This release of **scala-faker** is build against Scala `2.8.0`, `2.8.1`, `2.8.2`,
-`2.9.0`, `2.9.0-1`, `2.9.1`, `2.9.2` and `2.10.0-M5`.
+`2.9.0`, `2.9.0-1`, `2.9.1`, `2.9.2` and `2.10`.
 
 **scala-faker** only depends on [snakeyaml] for reading the original [faker]
 yaml files. The tests are written with [scalatest].
