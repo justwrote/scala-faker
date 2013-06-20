@@ -160,7 +160,7 @@ object Lorem extends Base {
 
   private def rand(i: Int) = Random.nextInt(i)
 
-  def words(num: Int = 3): List[String]  =
+  def words(num: Int = 3): List[String] =
     (1 until num).map(x => fetch[String]("lorem.words")).toList
 
   def sentence(word_count: Int = 4): String =

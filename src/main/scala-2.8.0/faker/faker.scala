@@ -74,14 +74,14 @@ object Faker {
 trait Base {
   private val letters = 'a' to 'z'
 
-  def numerify(s: String) =
+  def numerify(s: String): String =
     """#""".r.replaceAllIn(s, Random.nextInt(10).toString)
 
-  def letterify(s: String) =
+  def letterify(s: String): String =
     """\?""".r.replaceAllIn(s, letters.rand.toString)
 
   // Nice name!
-  def bothify(s: String) =
+  def bothify(s: String): String =
     letterify(numerify(s))
 
   def fetch[T](key: String): T =
@@ -114,19 +114,19 @@ object Internet extends Base {
   def free_email: String = free_email(null)
   def free_email(name: String): String = user_name(name) + "@" + fetch("internet.free_email")
 
-  def domain_name = domain_word + "." + domain_suffix
-  def domain_word = """\W""".r.replaceAllIn(Company.name.split(" ").head, "").toLowerCase
+  def domain_name: String = domain_word + "." + domain_suffix
+  def domain_word: String = """\W""".r.replaceAllIn(Company.name.split(" ").head, "").toLowerCase
   def domain_suffix: String = fetch("internet.domain_suffix")
-  def ip_v4_address = {
+  def ip_v4_address: String = {
     (1 to 4).map(x => v4.rand).mkString(".")
   }
-  def ip_v6_address = {
+  def ip_v6_address: String = {
     (1 to 8).map(x => v6.rand).map(x => "%x".format(x)).mkString(":")
   }
 }
 
 object Name extends Base {
-  def name = asIterable(fetch[ArrayList[String]]("name.formats")).map(eval).mkString(" ")
+  def name: String = asIterable(fetch[ArrayList[String]]("name.formats")).map(eval).mkString(" ")
 
   private def eval(s: String) = s match {
     case ":first_name" => first_name
@@ -143,7 +143,7 @@ object Name extends Base {
 }
 
 object PhoneNumber extends Base {
-  def phone_number = numerify(fetch("phone_number.formats"))
+  def phone_number: String = numerify(fetch("phone_number.formats"))
 }
 
 object Company extends Base {
@@ -160,19 +160,19 @@ object Lorem extends Base {
 
   private def rand(i: Int) = Random.nextInt(i)
 
-  def words(num: Int = 3) =
+  def words(num: Int = 3): List[String] =
     (1 until num).map(x => fetch[String]("lorem.words")).toList
 
-  def sentence(word_count: Int = 4) =
+  def sentence(word_count: Int = 4): String =
     words(word_count + rand(6)).mkString(" ").capitalize + "."
 
-  def sentences(sentence_count: Int = 3) =
+  def sentences(sentence_count: Int = 3): List[String] =
     (1 until sentence_count).map(x => sentence()).toList
 
-  def paragraph(sentences_count: Int = 3) =
+  def paragraph(sentences_count: Int = 3): String =
     sentences(sentences_count + rand(3)).mkString(" ")
 
-  def paragraphs(paragraph_count: Int = 3) =
+  def paragraphs(paragraph_count: Int = 3): List[String] =
     (1 until paragraph_count).map(x => paragraph()).toList
 }
 
