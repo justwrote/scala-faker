@@ -175,3 +175,23 @@ object Lorem extends Base {
   def paragraphs(paragraph_count: Int = 3) =
     (1 until paragraph_count).map(x => paragraph()).toList
 }
+
+object Geo extends Base {
+
+  type CoordsFun = () => (Double, Double)
+
+  case class CoordsRange(minLat: Double, maxLat: Double, minLng: Double, maxLng: Double) {
+    val latRange = maxLat - minLat
+    val lngRange = maxLng - minLng
+  }
+
+  private[faker] val EarthCoordsFun = coordsInArea(CoordsRange(-90, 90, -180, 180))
+
+  def coords: (Double, Double) = EarthCoordsFun()
+
+  def coordsInArea(range: CoordsRange): CoordsFun = new CoordsFun {
+    import range._
+
+    def apply() = (math.random * latRange + minLat, math.random * lngRange + minLng)
+  }
+}

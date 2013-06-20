@@ -149,3 +149,23 @@ class InternetTest extends GeneralTest {
     }
   }
 }
+
+class GeoTest extends GeneralTest {
+
+  override protected def beforeAll() {
+    Faker.locale("en")
+  }
+
+  def within(range: Geo.CoordsRange, coords: (Double, Double)): Boolean =
+    range.maxLat >= coords._1 && coords._1 >= range.minLat && range.maxLng >= coords._2 && coords._2 >= range.minLng
+
+  "Geo" should {
+
+    "generate valid coordinates in a given range" in {
+      val customRange = Geo.CoordsRange(-10, 10, -20, 20)
+      val fn = Geo.coordsInArea(customRange)
+      for(x <- 1 to 1000)
+        within(customRange, fn())
+    }
+  }
+}
