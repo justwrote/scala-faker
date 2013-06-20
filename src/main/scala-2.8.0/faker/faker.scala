@@ -9,17 +9,17 @@ import io.Source
 import Helper._
 
 object Faker {
-  
+
   case class FakeData(locale: String) {
-    
+
     private[this] val _language = url(filename(language(locale))) match {
       case Some(_) => language(locale)
       case _ => defaultLanguage
     }
-    
-    private[this] val _locale = 
+
+    private[this] val _locale =
       if (_language == Helper.locale(locale)) None else Some(Helper.locale(locale))
-    
+
     private[this] val (langData, localeData) = init(_language, _locale)
 
     private[Faker] def get(s: String): Option[List[Object]] = _locale match {
@@ -31,7 +31,7 @@ object Faker {
     }
 
     private[this] def getFromLanguage(s: String) = get(s.replaceFirst("\\*", _language) + ".", langData)
-    
+
     @scala.annotation.tailrec
     private[this] def get(s: String, data: Option[Object]): Option[List[String]] = data match {
       case None => None
@@ -43,12 +43,12 @@ object Faker {
         Some(asIterable(x.asInstanceOf[java.util.List[String]]).toList)
       case Some(x) => None
     }
-  
+
     private[this] def loadFile(filename: String) = url(filename).map(Source.fromURL(_, "UTF-8"))
-    
-    private[this] def load(yaml: Yaml, locale: String) = 
+
+    private[this] def load(yaml: Yaml, locale: String) =
       loadFile(filename(locale)).map(x => yaml.load(x.mkString)).map(_.asInstanceOf[java.util.Map[String, Object]])
-  
+
     private def init(language: String, locale: Option[String]) = {
       val yaml = new Yaml
       val langData = load(yaml, language)
@@ -56,10 +56,10 @@ object Faker {
       (langData, localeData)
     }
   }
-  
+
   private[this] val defaultLanguage = "en"
   private[this] var data = FakeData(systemLocale)
-  
+
   private[this] def filename(locale: String) = locale + ".yml"
 
   def locale(value: String) {
@@ -98,7 +98,7 @@ object Internet extends Base {
   def user_name(name: String): String =
     if(name == null) {
       Random.nextInt(10) match {
-        case x if (x < 5) =>
+        case x if x < 5 =>
           """\W""".r.replaceAllIn(Name.first_name, "").toLowerCase
         case _ =>
           List(Name.first_name, Name.last_name).

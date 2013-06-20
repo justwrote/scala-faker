@@ -45,15 +45,15 @@ class BaseTest extends GeneralTest {
   "Base" should {
 
     "numerify" in {
-      base.numerify("###") should fullyMatch regex ("""\d{3}""")
+      base.numerify("###") should fullyMatch regex """\d{3}"""
     }
 
     "letterify" in {
-      base.letterify("???") should fullyMatch regex ("""\w{3}""")
+      base.letterify("???") should fullyMatch regex """\w{3}"""
     }
 
     "bothify" in {
-      base.bothify("##??##") should fullyMatch regex ("""\d{2}\w{2}\d{2}""")
+      base.bothify("##??##") should fullyMatch regex """\d{2}\w{2}\d{2}"""
     }
 
     "return data if available" in {
@@ -84,23 +84,23 @@ class NameTest extends GeneralTest {
   "Name" should {
 
     "generate a valid name" in {
-      Name.name should fullyMatch regex ("""([A-Za-z'\.]+ ?){2,3}""")
+      Name.name should fullyMatch regex """([A-Za-z'\.]+ ?){2,3}"""
     }
 
     "name \"Julio O'Connell\" should be valid" in {
-      "Julio O'Connell" should fullyMatch regex ("""([A-Za-z'\.]+ ?){2,3}""")
+      "Julio O'Connell" should fullyMatch regex """([A-Za-z'\.]+ ?){2,3}"""
     }
-    
+
     "name \"Camila O'Conner III\" should be valid" in {
-      "Camila O'Conner III" should fullyMatch regex ("""([A-Za-z'\.]+ ?){2,3}""")
+      "Camila O'Conner III" should fullyMatch regex """([A-Za-z'\.]+ ?){2,3}"""
     }
 
     "generate a valid prefix" in {
-      Name.prefix should fullyMatch regex ("""[A-Z][a-z]+\.?""")
+      Name.prefix should fullyMatch regex """[A-Z][a-z]+\.?"""
     }
 
     "generate a valid suffix" in {
-      Name.suffix should fullyMatch regex ("""[A-Z][A-Za-z]*\.?""")
+      Name.suffix should fullyMatch regex """[A-Z][A-Za-z]*\.?"""
     }
   }
 }
@@ -113,38 +113,38 @@ class InternetTest extends GeneralTest {
 
   "Internet" should {
     "generate a valid email address" in {
-      Internet.email should fullyMatch regex ("""^[a-z0-9._%\-+]+@(?:[a-z0-9\-]+\.)+[a-z]{2,4}$""")
+      Internet.email should fullyMatch regex """^[a-z0-9._%\-+]+@(?:[a-z0-9\-]+\.)+[a-z]{2,4}$"""
     }
     "generate a valid free email address" in {
-      Internet.free_email should fullyMatch regex (""".+@(gmail|hotmail|yahoo)\.com""")
+      Internet.free_email should fullyMatch regex """.+@(gmail|hotmail|yahoo)\.com"""
     }
     "generate a username" in {
-      Internet.user_name should fullyMatch regex ("""[a-z]+((_|\.)[a-z]+)?""")
+      Internet.user_name should fullyMatch regex """[a-z]+((_|\.)[a-z]+)?"""
     }
     "generate a valid username for a given name" in {
-      Internet.user_name("bo peep") should fullyMatch regex ("""(bo(_|\.)?peep|peep(_|\.)?bo)""")
+      Internet.user_name("bo peep") should fullyMatch regex """(bo(_|\.)?peep|peep(_|\.)?bo)"""
     }
     "generate a domain name" in {
-      Internet.domain_name should fullyMatch regex ("""\w+\.\w+""")
+      Internet.domain_name should fullyMatch regex """\w+\.\w+"""
     }
     "generate a domain world" in {
-      Internet.domain_word should fullyMatch regex ("""^\w+$""")
+      Internet.domain_word should fullyMatch regex """^\w+$"""
     }
     "generate a domains suffix" in {
-      Internet.domain_suffix should fullyMatch regex ("""^\w+(\.\w+)?""")
+      Internet.domain_suffix should fullyMatch regex """^\w+(\.\w+)?"""
     }
     "generate an ipv4 address" in {
       val ip = Internet.ip_v4_address
       ip.toSeq.count(_ == '.') should be (3)
       (1 to 1000).foreach(x => {
-        Internet.ip_v4_address.split('.').map(_.toInt).max should be <= (255)
+        Internet.ip_v4_address.split('.').map(_.toInt).max should be <= 255
       })
     }
     "generate an ipv6 address" in {
       val ip = Internet.ip_v6_address
       ip.toSeq.count(_ == ':') should be (7)
       (1 to 1000).foreach(x => {
-        Internet.ip_v6_address.split(':').map(Integer.valueOf(_, 16).intValue).max should be <= (65535)
+        Internet.ip_v6_address.split(':').map(Integer.valueOf(_, 16).intValue).max should be <= 65535
       })
     }
   }

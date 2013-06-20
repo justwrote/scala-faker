@@ -1,6 +1,5 @@
 package faker
 
-import java.io.File
 import util.Random
 
 object Helper {

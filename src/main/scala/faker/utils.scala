@@ -2,7 +2,6 @@ package faker
 
 import language.implicitConversions
 
-import java.io.File
 import util.Random
 
 object Helper {
