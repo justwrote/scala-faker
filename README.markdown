@@ -52,7 +52,7 @@ Adding scala-faker as dependency to your project is really simple. Just add
 
     resolvers += "justwrote" at "http://repo.justwrote.it/snapshots/"
 
-    libraryDependencies += "it.justwrote" %% "scala-faker" % "0.2-SNAPSHOT"
+    libraryDependencies += "it.justwrote" %% "scala-faker" % "0.2"
 
 #### Maven
 
@@ -64,7 +64,7 @@ Adding scala-faker as dependency to your project is really simple. Just add
     <dependency>
         <groupId>it.justwrote</groupId>
         <artifactId>scala-faker_2.9.1</artifactId>
-        <version>0.2-SNAPSHOTS</version>
+        <version>0.2</version>
     </dependency>
 
 where `2.9.1` is you Scala version.
