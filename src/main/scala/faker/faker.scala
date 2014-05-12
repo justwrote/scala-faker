@@ -77,10 +77,10 @@ trait Base {
   private val letterifyPattern = """\?""".r
 
   def numerify(s: String): String =
-    numerifyPattern.replaceAllIn(s, Random.nextInt(10).toString)
+    numerifyPattern.replaceAllIn(s, _ => Random.nextInt(10).toString)
 
   def letterify(s: String): String =
-    letterifyPattern.replaceAllIn(s, letters.rand.toString)
+    letterifyPattern.replaceAllIn(s, _ => letters.rand.toString)
 
   // Nice name!
   def bothify(s: String): String =

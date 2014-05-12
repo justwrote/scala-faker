@@ -46,10 +46,12 @@ class BaseTest extends GeneralTest {
 
     "numerify" in {
       base.numerify("###") should fullyMatch regex """\d{3}"""
+      base.numerify("##########").toSeq.distinct.length should be > 1
     }
 
     "letterify" in {
       base.letterify("???") should fullyMatch regex """\w{3}"""
+      base.letterify("??????????").toSeq.distinct.length should be > 1
     }
 
     "bothify" in {
