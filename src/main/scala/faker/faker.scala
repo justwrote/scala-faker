@@ -73,25 +73,28 @@ object Faker {
 
 trait Base {
   private val letters = 'a' to 'z'
+  private val numerifyPattern = """#""".r
+  private val letterifyPattern = """\?""".r
 
   def numerify(s: String): String =
-    """#""".r.replaceAllIn(s, Random.nextInt(10).toString)
+    numerifyPattern.replaceAllIn(s, Random.nextInt(10).toString)
 
   def letterify(s: String): String =
-    """\?""".r.replaceAllIn(s, letters.rand.toString)
+    letterifyPattern.replaceAllIn(s, letters.rand.toString)
 
   // Nice name!
   def bothify(s: String): String =
     letterify(numerify(s))
 
   def fetch[T](key: String): T =
-    Faker.get("*.faker." + key).map(_.rand).map(_.asInstanceOf[T]) getOrElse null.asInstanceOf[T]
+    Faker.get("*.faker." + key).map(_.rand).fold(null.asInstanceOf[T])(_.asInstanceOf[T])
 }
 
 object Internet extends Base {
   private val sep = List(".", "_", "")
   private val v4 = (2 to 255).toArray
   private val v6 = (0 to 65535).toArray
+  private val nonWordPattern = """\W""".r
 
   def user_name: String = user_name(null)
 
@@ -99,10 +102,10 @@ object Internet extends Base {
     if(name == null) {
       Random.nextInt(10) match {
         case x if x < 5 =>
-          """\W""".r.replaceAllIn(Name.first_name, "").toLowerCase
+          nonWordPattern.replaceAllIn(Name.first_name, "").toLowerCase
         case _ =>
           List(Name.first_name, Name.last_name).
-            map(x => """\W""".r.replaceAllIn(x, "")).mkString(sep.rand).toLowerCase
+            map(x => nonWordPattern.replaceAllIn(x, "")).mkString(sep.rand).toLowerCase
       }
     } else {
       Random.shuffle(name.split(" ").toList).mkString(sep.rand).toLowerCase
@@ -115,7 +118,7 @@ object Internet extends Base {
   def free_email(name: String): String = user_name(name) + "@" + fetch("internet.free_email")
 
   def domain_name: String = domain_word + "." + domain_suffix
-  def domain_word: String = """\W""".r.replaceAllIn(Company.name.split(" ").head, "").toLowerCase
+  def domain_word: String = nonWordPattern.replaceAllIn(Company.name.split(" ").head, "").toLowerCase
   def domain_suffix: String = fetch("internet.domain_suffix")
   def ip_v4_address: String = {
     (1 to 4).map(x => v4.rand).mkString(".")
