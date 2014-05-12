@@ -49,13 +49,13 @@ for the latest stable release:
 
     resolvers += "justwrote" at "http://repo.justwrote.it/releases/"
 
-    libraryDependencies += "it.justwrote" %% "scala-faker" % "0.2"
+    libraryDependencies += "it.justwrote" %% "scala-faker" % "0.3"
 
 for snapshot:
 
     resolvers += "justwrote" at "http://repo.justwrote.it/snapshots/"
 
-    libraryDependencies += "it.justwrote" %% "scala-faker" % "0.3-SNAPSHOT"
+    libraryDependencies += "it.justwrote" %% "scala-faker" % "0.4-SNAPSHOT"
 
 #### Maven
 
@@ -69,7 +69,7 @@ for the latest stable release:
     <dependency>
         <groupId>it.justwrote</groupId>
         <artifactId>scala-faker_2.9.1</artifactId>
-        <version>0.2</version>
+        <version>0.3</version>
     </dependency>
 
 for snapshot:
@@ -82,7 +82,7 @@ for snapshot:
     <dependency>
         <groupId>it.justwrote</groupId>
         <artifactId>scala-faker_2.9.1</artifactId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.4-SNAPSHOT</version>
     </dependency>
 
 where `2.9.1` is your Scala version.
