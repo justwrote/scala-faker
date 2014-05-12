@@ -1,0 +1,1 @@
+scalaVersion := crossScalaVersions.value.last

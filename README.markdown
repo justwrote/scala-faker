@@ -2,8 +2,8 @@
 
 **scala-faker** is a library written in Scala which generates fake data such
 as names, addresses, and phone numbers. It is a Scala port of the famous Ruby
-library [faker]. It actually uses the same data for generating. This release of **scala-faker** is build against Scala `2.8.0`, `2.8.1`, `2.8.2`,
-`2.9.0`, `2.9.0-1`, `2.9.1`, `2.9.2` and `2.10`.
+library [faker]. It actually uses the same data for generating. This release of **scala-faker** is build against Scala `2.8.1`, `2.8.2`,
+`2.9.0`, `2.9.0-1`, `2.9.1`, `2.9.1-1`, `2.9.2`, `2.9.3`, `2.10` and `2.11`.
 
 **scala-faker** only depends on [snakeyaml] for reading the original [faker]
 yaml files. The tests are written with [scalatest].
@@ -56,7 +56,7 @@ for snapshot:
     resolvers += "justwrote" at "http://repo.justwrote.it/snapshots/"
 
     libraryDependencies += "it.justwrote" %% "scala-faker" % "0.3-SNAPSHOT"
-    
+
 #### Maven
 
 for the latest stable release:
@@ -71,7 +71,7 @@ for the latest stable release:
         <artifactId>scala-faker_2.9.1</artifactId>
         <version>0.2</version>
     </dependency>
-    
+
 for snapshot:
 
     <repository>
