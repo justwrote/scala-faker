@@ -75,6 +75,7 @@ trait Base {
   private val letters = 'a' to 'z'
   private val numerifyPattern = """#""".r
   private val letterifyPattern = """\?""".r
+  private val parsePattern = """(\(?)#\{([A-Za-z]+\.)?([^\}]+)\}([^#]+)?""".r
 
   def numerify(s: String): String =
     numerifyPattern.replaceAllIn(s, _ => Random.nextInt(10).toString)
@@ -88,6 +89,64 @@ trait Base {
 
   def fetch[T](key: String): T =
     Faker.get("*.faker." + key).map(_.rand).fold(null.asInstanceOf[T])(_.asInstanceOf[T])
+
+  // Load formatted strings from the locale, "parsing" them into method calls that can be used to generate a
+  // formatted translation: e.g., "#{first_name} #{last_name}".
+  def parse(key: String): String =
+    parsePattern.findAllIn(fetch[String](key)).matchData.map {
+      thisMatch =>
+        thisMatch.subgroups match {
+          case prefix :: kls :: meth :: etc :: _ =>
+            // If the token had a class Prefix (e.g., Name.first_name) grab the constant, otherwise use self
+            val cls: Class[_ <: Base] = if (kls==null || kls.isEmpty()) 
+              this.getClass 
+            else 
+              Class.forName("faker."  + kls.replaceAll("\\.$", "\\$")).asInstanceOf[Class[Base]]
+            val baseObject: Base = cls.getField("MODULE$").get(cls).asInstanceOf[Base]
+
+            // If an optional leading parentheses is not present, prefix.should == "", otherwise prefix.should == "("
+            // In either case the information will be retained for reconstruction of the string.
+            val text = new StringBuilder(prefix)
+
+            // If the class has the method, call it, otherwise fetch the translation (i.e., faker.name.first_name)
+            text ++= (cls.getMethods.find { m => m.getName.equals(meth) } match {
+                case Some(m) => m.invoke(baseObject).toString
+                case _       => fetch(cls.getSimpleName.toLowerCase + "." + meth.toLowerCase)
+              })
+            
+            if(etc != null)
+              text ++= etc
+            text.toString()
+        }
+    }.mkString("")
+}
+
+object Address extends Base {
+  def city: String = parse("address.city")
+  def street_name: String = parse("address.street_name")
+  def street_address(includeSecondary: Boolean = false): String =
+    numerify(parse("address.street_address") + (if (includeSecondary) " " + secondary_address else ""))
+  def secondary_address: String = numerify(fetch("address.secondary_address"))
+  def building_number: String = bothify(fetch("address.building_number"))
+  def zip_code(stateAbbreviation: String = ""): String =
+    if (stateAbbreviation.isEmpty)
+      bothify(fetch("address.postcode"))
+    else
+      // provide a zip code that is valid for the state provided
+      // see http://www.fincen.gov/forms/files/us_state_territory_zip_codes.pdf
+      bothify(fetch("address.postcode_by_state." + stateAbbreviation))
+  def time_zone: String = fetch("address.time_zone")
+  val zip = zip_code _
+  val postcode = zip_code _
+  def street_suffix: String = fetch("address.street_suffix")
+  def city_suffix: String = fetch("address.city_suffix")
+  def city_prefix: String = fetch("address.city_prefix")
+  def state_abbr: String = fetch("address.state_abbr")
+  def state: String = fetch("address.state")
+  def country: String = fetch("address.country")
+  def country_code: String = fetch("address.country_code")
+  def latitude: String = ((Random.nextDouble() * 180) - 90).toString
+  def longitude: String = ((Random.nextDouble() * 360) - 180).toString
 }
 
 object Internet extends Base {
