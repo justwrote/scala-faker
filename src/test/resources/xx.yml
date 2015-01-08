@@ -1,0 +1,11 @@
+xx:
+  faker:
+    address:
+      test_parse: [ "#{city_prefix}" ]
+      test_parse2: [ "#{city_prefix} then follows #{city_suffix}" ]
+      city_suffix: [ Suffix ]
+      city_prefix: [ Prefix ]
+    other:
+      test_parse3: [ "#{Address.city_prefix}" ]
+      test_parse4: [ "#{Address.city_prefix} then follows #{Address.city_suffix}" ]
+      

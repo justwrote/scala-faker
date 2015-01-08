@@ -74,6 +74,30 @@ class BaseTest extends GeneralTest {
       val data: String = base.fetch("wrong")
       data should be (null)
     }
+    
+    "parse correctly from the base object" in {
+      Faker.locale("xx")
+      val data: String = Address.parse("address.test_parse")
+      data should be ("Prefix")
+    }
+
+    "parse correctly two invocations from the base object" in {
+      Faker.locale("xx")
+      val data: String = Address.parse("address.test_parse2")
+      data should be ("Prefix then follows Suffix")
+    }
+
+    "parse correctly from other object" in {
+      Faker.locale("xx")
+      val data: String = base.parse("other.test_parse3")
+      data should be ("Prefix")
+    }
+
+    "parse correctly two invocations from other object" in {
+      Faker.locale("xx")
+      val data: String = base.parse("other.test_parse4")
+      data should be ("Prefix then follows Suffix")
+    }
   }
 }
 
@@ -170,4 +194,29 @@ class GeoTest extends GeneralTest {
         within(customRange, fn())
     }
   }
+}
+
+class AddressTest extends GeneralTest {
+  
+  override protected def beforeAll() {
+    Faker.locale("en")
+  }
+  
+  "Address" should {
+    "return a valid city" in {
+      val data: String = Address.city
+      data should fullyMatch regex """([A-Za-z'\.]+ ?){1,3}"""
+    }   
+
+    "return a valid street name" in {
+      val data: String = Address.street_name
+      data should fullyMatch regex """([A-Za-z'\.]+ ?){1,3}"""
+    }   
+
+    "return a valid street address" in {
+      val data: String = Address.street_address(true)
+      data should fullyMatch regex """[0-9]+ ([A-Za-z'\.]+ ?){1,3} [A-Za-z'\.]+ [0-9]+"""
+    }   
+  }
+
 }
