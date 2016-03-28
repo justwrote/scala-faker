@@ -22,9 +22,9 @@ object Faker {
 
     private[this] val (langData, localeData) = init(_language, _locale)
 
-    private[Faker] def get(s: String): Option[Seq[Object]] = _locale match {
+    private[Faker] def get(s: String): Option[Seq[AnyRef]] = _locale match {
       case Some(l) => get(s.replaceFirst("\\*", l) + ".", localeData) match {
-                        case Some(x) => Option(x)
+                        case x: Some[_] => x
                         case _ => getFromLanguage(s)
                       }
       case _ => getFromLanguage(s)
@@ -33,13 +33,13 @@ object Faker {
     private[this] def getFromLanguage(s: String) = get(s.replaceFirst("\\*", _language) + ".", langData)
 
     @scala.annotation.tailrec
-    private[this] def get(s: String, data: Option[Object]): Option[Seq[String]] = data match {
+    private[this] def get(s: String, data: Option[AnyRef]): Option[Seq[String]] = data match {
       case None => None
-      case Some(x: java.util.Map[_, _]) if s.indexOf('.') != -1 =>
+      case Some(x: java.util.Map[_, _]) if s.contains('.') =>
         val key = s.substring(0, s.indexOf('.'))
         val newKey = s.replaceFirst(key + ".", "")
-        get(newKey, Option(x.asInstanceOf[java.util.Map[String, Object]].get(key)))
-      case Some(x: java.util.List[_]) if s == "" =>
+        get(newKey, Option(x.asInstanceOf[java.util.Map[String, AnyRef]].get(key)))
+      case Some(x: java.util.List[_]) if s.isEmpty =>
         Some(x.asInstanceOf[java.util.List[String]].asScala)
       case Some(x) => None
     }
@@ -47,7 +47,9 @@ object Faker {
     private[this] def loadFile(filename: String) = url(filename).map(Source.fromURL(_, "UTF-8"))
 
     private[this] def load(yaml: Yaml, locale: String) =
-      loadFile(filename(locale)).map(x => yaml.load(x.mkString)).map(_.asInstanceOf[java.util.Map[String, Object]])
+      loadFile(filename(locale))
+        .map(x => yaml.load(x.mkString))
+        .map(_.asInstanceOf[java.util.Map[String, AnyRef]])
 
     private def init(language: String, locale: Option[String]) = {
       val yaml = new Yaml
@@ -68,7 +70,7 @@ object Faker {
     }
   }
 
-  private[faker] def get(s: String): Option[Seq[Object]] = data.get(s)
+  private[faker] def get[T](s: String): Option[Seq[AnyRef]] = data.get(s)
 }
 
 trait Base {
@@ -96,40 +98,39 @@ object Internet extends Base {
   private val v6 = (0 to 65535).toArray
   private val nonWordPattern = """\W""".r
 
-  def user_name: String = user_name(null)
+  def user_name: String = user_name("")
 
   def user_name(name: String): String =
-    if(name == null) {
-      Random.nextInt(10) match {
-        case x if x < 5 =>
-          nonWordPattern.replaceAllIn(Name.first_name, "").toLowerCase
-        case _ =>
-          List(Name.first_name, Name.last_name).
-            map(x => nonWordPattern.replaceAllIn(x, "")).mkString(sep.rand).toLowerCase
+    if(name.isEmpty) {
+      if (Random.nextBoolean()) {
+        nonWordPattern.replaceAllIn(Name.first_name, "").toLowerCase
+      } else {
+        List(Name.first_name, Name.last_name).
+          map(x => nonWordPattern.replaceAllIn(x, "")).mkString(sep.rand).toLowerCase
       }
     } else {
       Random.shuffle(name.split(" ").toList).mkString(sep.rand).toLowerCase
     }
 
-  def email: String = email(null)
+  def email: String = email("")
   def email(name: String): String = user_name(name) + "@" + domain_name
 
-  def free_email: String = free_email(null)
+  def free_email: String = free_email("")
   def free_email(name: String): String = user_name(name) + "@" + fetch("internet.free_email")
 
   def domain_name: String = domain_word + "." + domain_suffix
   def domain_word: String = nonWordPattern.replaceAllIn(Company.name.split(" ").head, "").toLowerCase
   def domain_suffix: String = fetch("internet.domain_suffix")
   def ip_v4_address: String = {
-    (1 to 4).map(x => v4.rand).mkString(".")
+    (1 to 4).map(_ => v4.rand).mkString(".")
   }
   def ip_v6_address: String = {
-    (1 to 8).map(x => v6.rand).map(x => "%x".format(x)).mkString(":")
+    (1 to 8).map(_ => v6.rand).map(x => "%x".format(x)).mkString(":")
   }
 }
 
 object Name extends Base {
-  def name: String = fetch[ArrayList[String]]("name.formats").asScala.map(eval).mkString(" ")
+  def name: String = fetch[java.util.ArrayList[String]]("name.formats").asScala.map(eval).mkString(" ")
 
   private def eval(s: String) = s match {
     case ":first_name" => first_name
@@ -195,6 +196,6 @@ object Geo extends Base {
   def coordsInArea(range: CoordsRange): CoordsFun = new CoordsFun {
     import range._
 
-    def apply() = (math.random * latRange + minLat, math.random * lngRange + minLng)
+    def apply() = (Random.nextDouble * latRange + minLat, Random.nextDouble * lngRange + minLng)
   }
 }
