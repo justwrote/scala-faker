@@ -29,15 +29,13 @@ object Helper {
 
   def url(filename: String) = Option(getClass.getClassLoader.getResource(filename))
 
-
-
-  implicit def randomAtCollection[T](to: Traversable[T]) = new RandomElementInCollection[T](to)
-  implicit def randomAtArray[T](to: Array[T]) = new RandomElementInArray[T](to)
-
-  class RandomElementInCollection[T](orig: Traversable[T]) {
+  implicit class RandomElementInCollection[T](orig: Traversable[T]) {
     def rand: T = orig.drop(Random.nextInt(orig.size)).head
   }
-  class RandomElementInArray[T](orig: Array[T]) {
+  implicit class RandomElementInArray[T](orig: Array[T]) {
+    def rand: T = orig(Random.nextInt(orig.length))
+  }
+  implicit class RandomElementInSeq[T](orig: Seq[T]) {
     def rand: T = orig(Random.nextInt(orig.length))
   }
 }
