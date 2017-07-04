@@ -15,6 +15,7 @@ object Dependencies {
       case v if v.startsWith("2.9.")  => st(version, "1.9.2")
       case v if v.startsWith("2.10.") => st("2.10", "2.1.6")
       case v if v.startsWith("2.11.") => st("2.11", "2.1.6")
+      case v if v.startsWith("2.12.") => st("2.12", "3.0.3")
       case _ => sys.error("ScalaTest not supported for scala version %s!" format version)
     }
   }
@@ -42,7 +43,7 @@ object ScalaFaker extends Build {
       sbtPlugin := false,
       organization := "it.justwrote",
       name := projectName,
-      crossScalaVersions := Seq("2.8.1", "2.8.2", "2.9.0", "2.9.0-1", "2.9.1", "2.9.1-1", "2.9.2", "2.9.3", "2.10.4", "2.11.0"),
+      crossScalaVersions := Seq("2.8.1", "2.8.2", "2.9.0", "2.9.0-1", "2.9.1", "2.9.1-1", "2.9.2", "2.9.3", "2.10.4", "2.11.0", "2.12.2"),
       publishArtifact in (Compile, packageDoc) := false,
       scalacOptions ++= Seq("-deprecation", "-Xcheckinit", "-encoding", "utf8", "-g:vars", "-unchecked", "-optimize"),
       parallelExecution := true,
